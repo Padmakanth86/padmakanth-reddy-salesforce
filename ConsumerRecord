@@ -1,16 +1,29 @@
-class ConsumerRecord {
-    public static void sendEmailNotification (List<consumer__c> con){
-        for(consumer__c c:con)
-        {
-            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-                email.setToAddresses( new List<String>{c.email__c});
+public class ConsumerRecord {
+    public static void sendEmailNotification(List<consumer__c> consumers) {
+        List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+
+        for (consumer__c consumer : consumers) {
+            // Validate that the email field is not null or empty
+            if (String.isNotBlank(consumer.email__c)) {
+                Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+                
+                // Set the recipient email
+                email.setToAddresses(new List<String>{consumer.email__c});
+                
+                // Set the email subject
                 email.setSubject('Welcome to our company');
-                email.setPlainTextBody('Dear '  + ' '+ ',\n\nWelcome to MY RICE!'+'You have been seen as a valuable customer to us. PLease continue your journey with us, while we try to provide you with good quality resources.'+'\n'+
-                                           "We are proud to associate with valuable customers like you and we look forward to collaborating with you by providing more and more exciting discounts or even product offers too.' + '\n'
-                                           +'So why taking a step back, take a leap of faith and shop with us more, while we provide with the valuable products and offers'+'\n'+'\n'+'\n'+
-                                           'Thankyou for buying '+ '' +'Here are some of the products that are brought by the customers who similarly bought products like this'+'\n\n');
+                
+                // Construct the email body
+                String emailBody = 'Dear ' + consumer.Name + ',\n\n' +
+                                   'Welcome to MY RICE!\n\n' +
+                                   'You have been seen as a valuable customer to us. Please continue your journey with us, while we strive to provide you with good quality resources.\n\n' +
+                                   'We are proud to associate with valuable customers like you and look forward to collaborating with you by providing more exciting discounts and product offers.\n\n' +
+                                   'So why take a step back? Take a leap of faith and shop with us more, while we provide valuable products and offers.\n\n\n' +
+                                   'Thank you for buying from us. Here are some products that customers who bought similar items have also enjoyed.\n\n';
+
                 Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{email});
 
         }
     }
+}
 }
